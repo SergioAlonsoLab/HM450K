@@ -49,10 +49,13 @@ for(tumor in tumor.types) {
                           workflow.type = "ASCAT3")
     GDCdownload(cna_query,files.per.chunk = 15,directory = "GDCdata/")
     
+    
+    save(clinical_query,methylation_query,mutations_query,cna_query,file = sprintf("output/%s_queries.rda",tumor))
+    
 }
 
 
 
-
+length(tumor.types)
 
 
