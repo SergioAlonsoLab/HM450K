@@ -56,6 +56,5 @@ for(tumor in tumor.types) {
 
 
 
-length(tumor.types)
 
 
