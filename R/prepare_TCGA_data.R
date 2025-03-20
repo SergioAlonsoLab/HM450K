@@ -3,6 +3,9 @@
 library(TCGAbiolinks)
 library(tidyr)
 library(data.table)
+library(SummarizedExperiment)
+
+if(!dir.exists("output")) dir.create("output")
 
 # TCGA projects
 
@@ -15,11 +18,16 @@ for(tumor in tumor.types) {
   
   load(file = sprintf("output/%s_queries.rda",tumor),verbose=T)
   
-  clinical <- GDCprepare(clinical_query)
-  #mutations <- GDCprepare(mutations_query)
-  #methylation <- GDCprepare(methylation_query)
-  #cna <- GDCprepare(cna_query)
+  clinical <- 0
+  mutations <- 0
+  methylation <- 0
+  cna <- 0
   
-  save(clinical,mutations,methyalation,cna,file=sprintf("output/%s_data.rda",tumor))
+  clinical <- GDCprepare(clinical_query)
+  mutations <- GDCprepare(mutations_query) 
+  methylation <- GDCprepare(methylation_query) 
+  cna <- GDCprepare(cna_query)
+  
+  save(clinical,mutations,methylation,cna,file=sprintf("output/%s_data.rda",tumor))
   
 }
