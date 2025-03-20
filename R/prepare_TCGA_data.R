@@ -22,12 +22,12 @@ for(tumor in tumor.types) {
   mutations <- 0
   methylation <- 0
   cna <- 0
-  
+  try({
   clinical <- GDCprepare(clinical_query)
   mutations <- GDCprepare(mutations_query) 
   methylation <- GDCprepare(methylation_query) 
   cna <- GDCprepare(cna_query)
   
   save(clinical,mutations,methylation,cna,file=sprintf("output/%s_data.rda",tumor))
-  
+  })
 }
