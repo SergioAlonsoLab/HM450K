@@ -93,7 +93,7 @@ for(tumor in tumor.types) {
   try({
     message("Trying PCA in ",tumor)
     pca1 <- prcomp(t(meth),scale. = F)
-    saveRDS(pca1,file=sprintf("output/%s_PCA.rds",tumor))
+    saveRDS(pca1,file=sprintf("output/%s_PCA.rds",tumor),compress = T)
     message("PCA in ",tumor," completed")})
   
 }
