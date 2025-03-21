@@ -28,6 +28,8 @@ for(tumor in tumor.types) {
   methylation <- GDCprepare(methylation_query) 
   cna <- GDCprepare(cna_query)
   
-  save(clinical,mutations,methylation,cna,file=sprintf("output/%s_data.rda",tumor))
+  # save the clinical, mutational and cna, and separately the methylation data
+  save(clinical,mutations,cna,file=sprintf("output/%s_data.rda",tumor),compress = T)
+  saveRDS(methylation,file=sprintf("output/%s_methylation_data.rds",tumor),compress = T)
   })
 }
