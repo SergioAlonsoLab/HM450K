@@ -1,8 +1,5 @@
 # load required packages
 
-#library(TCGAbiolinks)
-#library(SummarizedExperiment)
-
 library(tidyr)
 library(data.table)
 library(mclust)
@@ -10,20 +7,18 @@ library(ggplot2)
 
 # Prepared TCGA projects
 
-dir("output/",pattern = "*_data") %>% gsub("_data.rda","",.) -> tumor.types
+dir("output/",pattern = "*_data.rda") %>% grep("methylation",.,invert=T,value=T) %>% gsub("_data.rda","",.) -> tumor.types
 
-tumor.types <- "COAD" # for testing purposes
+print(tumor.types)
 
-if(!file.exists("misc/hm450k_manifest.csv")) {
-  curl::curl_download("https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv",
-                      "misc/hm450k_manifest.csv")
-  grep("(^cg|^IlmnID)",readLines("misc/hm450k_manifest.csv"),value=T) %>% writeLines("misc/hm450k_manifest.csv")
-}
+# tumor.types <- "COAD" # for testing purposes
 
 genes.of.interest <- fread("misc/true_sight_genes.txt",header = F)
 names(genes.of.interest) <- "hgnc_symbol"
 
 for(tumor in tumor.types) {
+  
+  message(sprintf("Now processing %s",tumor))
   
   load(sprintf("output/%s_data.rda",tumor),verbose=T)
   
@@ -51,8 +46,8 @@ for(tumor in tumor.types) {
   foo <- dcast(mutations[Hugo_Symbol %in% genes.of.interest$hgnc_symbol],bcr_patient_barcode ~ Hugo_Symbol,value.var = "HGVSp_Short",fun.aggregate = function(x) paste(unique(x) %>% sort,collapse="|"))
   foo[foo==""] <- "WT"
   
-  # remove genes mutated in less than 5 samples
-  foo <- foo[,.SD,.SDcols = which(colSums(foo!="WT") >= 5)]
+  # remove genes mutated in less than 2 samples
+  foo <- foo[,.SD,.SDcols = which(colSums(foo!="WT") >= 2)]
   names(foo)[-1] <- paste0("Gene:",names(foo)[-1])
   patients <- merge(patients,foo,all.x=T)
   
